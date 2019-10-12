@@ -1,5 +1,5 @@
 {
-  "name": "react_starter",
+  "name": "Share_U",
   "version": "1.1.0",
   "description": "Starting setup for react redux project",
   "main": "index.js",
@@ -8,11 +8,11 @@
     "build": "webpack --config webpack.prod.js --progress",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Scott Bowler",
+  "author": "Stella Hsin",
   "license": "ISC",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Learning-Fuze/react_starter.git"
+    "url": "https://github.com/stellaxxy/Share_U.git"
   },
   "dependencies": {
     "react": "^16.9.0",
