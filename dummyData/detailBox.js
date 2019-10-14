@@ -8,6 +8,10 @@ let detail = {
         location: 'Los Angeles',
         description: 'Great food',
         time: '07/07/2019',
+        images: [
+            "./images/newsfeed1.jpg",
+            "./images/newsfeed2.jpg"
+        ],
         likes: [
             {
                 id: 1,

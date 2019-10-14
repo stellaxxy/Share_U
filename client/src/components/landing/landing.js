@@ -8,8 +8,6 @@ class Landing extends Component {
                 <div className="landingHeading">Share U</div>
                 <div className="landingBody">
                     <DetailBox/>
-                    <DetailBox/>
-                    <DetailBox/>
                 </div>
             </div>
         )
