@@ -5,38 +5,17 @@
 
 body {
     margin: 0;
+    width: 100vw;
 
-    .app {
-        background-color: #000;
-        color: #FFF;
-        font-family: rustic;
-        font-size: 30px;
-        padding: 50px;
-        text-align: center;
+    #root {
+        width: 100%;
 
-        .logo {
-            height: 175px;
-        }
-
-        .rotate {
-            animation: spin 10s linear infinite;
-        }
-
-        h1 {
-            color: #61DAFB;
-            font-size: 4em;
-            font-weight: normal;
-            letter-spacing: 2px;
-            margin: 0.16em;
+        .appDiv {
+            font-family: rustic;
+            font-size: 30px;
+            width: 100%;
         }
     }
 }
 
-@keyframes spin {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
-}
+

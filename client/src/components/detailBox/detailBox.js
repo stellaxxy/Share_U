@@ -13,10 +13,12 @@ class DetailBox extends Component {
                     <div className="detailOwnerIcon">
                         <img src={userImg} alt="user image"/>
                     </div>
-                    <div className="detailUsername">xxy</div>
+                    <div className="detailUsername username">xxy</div>
                 </div>
                 <div className="detailMiddle">
-                    <img src={detailImg} alt="detail picture"/>
+                    <div className="detailPicDiv">
+                        <img src={detailImg} alt="detail picture"/>
+                    </div>
                     <div className="detailBtmDiv">
                         <div className="likeBtn">
                             <img src={likeIcon} alt="like icon"/>
@@ -32,12 +34,12 @@ class DetailBox extends Component {
                 <div className="detailBottom">
                     <div className="totalLikes">300 Likes</div>
                     <div className="detailDescription">
-                        <div>xxy</div>
-                        <div>detail description</div>
+                        <div className="username">xxy</div>
+                        <div className="description">detail description</div>
                     </div>
                     <div className="viewCommtBtn">View all 50 comments</div>
-                    <div>
-                        <div className="time">15 hours ago</div>
+                    <div className="time">
+                        <div>15 hours ago</div>
                     </div>
                 </div>
             </div>
