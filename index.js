@@ -36,7 +36,9 @@ app.post('/api/signup', (request, response) => {
                    const formattedQuery = mysql.format(query, insertInfo);
                    const result = await db.query(formattedQuery);
 
-
+                   if(!result){
+                        throw new Error('SQL error!');
+                   }
                    response.send({success: true});
                }
             });
