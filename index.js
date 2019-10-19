@@ -1,4 +1,5 @@
 const express = require('express');
+const session = require('express-session');
 const cors = require('cors');
 const bcrypt = require('bcrypt');
 const PORT = process.env.PORT || 9000;
@@ -7,6 +8,11 @@ const mysql = require('mysql');
 const db = require('./db');
 const app = express();
 
+app.use(session({
+    secret: 'eiveretgine',
+    resave: true,
+    saveUninitialized: false
+}));
 app.use(express.urlencoded({extended: false}));
 app.use(express.json());
 app.use(cors());
@@ -43,6 +49,46 @@ app.post('/api/signup', (request, response) => {
                }
             });
         }
+    } catch(err) {
+        handleError(response, err.message);
+    }
+});
+
+app.post('/api/login', async (request, response) => {
+    try {
+        if(!request.body.username && !request.body.email){
+            throw new Error('Please provide valid username or email.');
+        }
+        if(!request.body.password){
+            throw new Error('Please provide valid password.');
+        }
+        const {username, email, password} = request.body;
+        let getHashQuery = "SELECT `password`, `id` FROM `users` WHERE";
+        let value = "";
+        if(username){
+            getHashQuery = getHashQuery + " `username` = ?";
+            value = username;
+        } else if(email){
+            getHashQuery = getHashQuery + " `email` = ?";
+            value = email;
+        }
+        let result = await db.query(getHashQuery, [value]);
+
+        if(result.length !== 1){
+            throw new Error('There is no matching username or email.');
+        }
+        
+        let hash = result[0].password;
+
+        bcrypt.compare(password, hash, async (err, res) => {
+            if(res){
+                request.session.loggedin = true;
+                request.session.userid = result[0].id;
+                response.send({success: true});
+            } else {
+                throw new Error('Incorrect password.');
+            }
+        })
     } catch(err) {
         handleError(response, err.message);
     }
