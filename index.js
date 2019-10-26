@@ -3,6 +3,7 @@ const session = require('express-session');
 const cors = require('cors');
 const bcrypt = require('bcrypt');
 const PORT = process.env.PORT || 9000;
+const HOST = process.env.HOST || 'localhost';
 const ENV = process.env.NODE_ENV || 'development';
 const mysql = require('mysql');
 const db = require('./db');
@@ -14,8 +15,9 @@ app.use(session({
     saveUninitialized: false
 }));
 app.use(express.urlencoded({extended: false}));
-app.use(express.json());
 app.use(cors());
+app.use(express.json());
+app.use(express.static(__dirname + '/client/dist'));
 
 app.post('/api/signup', (request, response) => {
     try {
@@ -77,10 +79,13 @@ app.post('/api/login', async (request, response) => {
         if(result.length !== 1){
             throw new Error('There is no matching username or email.');
         }
-        
+
         let hash = result[0].password;
 
-        bcrypt.compare(password, hash, async (err, res) => {
+        bcrypt.compare(password, hash, (err, res) => {
+            if(err){
+                throw new Error('Sorry an error has occurred.');
+            }
             if(res){
                 request.session.loggedin = true;
                 request.session.userid = result[0].id;
@@ -94,7 +99,7 @@ app.post('/api/login', async (request, response) => {
     }
 });
 
-app.get('/api/newsfeed', (request, response) => {
+app.post('/api/newsfeed', (request, response) => {
     response.send({
         success: true
     });
@@ -107,5 +112,5 @@ app.listen(PORT, () => {
 });
 
 function handleError(response, error){
-    response.status(500).send({success: false, error: [error]});
+    response.send({success: false, error: [error]});
 }
