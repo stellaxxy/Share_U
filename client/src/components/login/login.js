@@ -19,6 +19,7 @@ class Login extends Component {
         if(result.success){
             //let loginPayload = {auth: true, info: {}};
             //this.props.setLoginInfo()
+
         }
     }
 

@@ -2,18 +2,24 @@ const express = require('express');
 const session = require('express-session');
 const cors = require('cors');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const cookieParser = require('cookie-parser');
+const auth = require('./middleware/auth');
 const PORT = process.env.PORT || 9000;
 const HOST = process.env.HOST || 'localhost';
 const ENV = process.env.NODE_ENV || 'development';
+const {secretKey} = require('./config');
 const mysql = require('mysql');
 const db = require('./db');
 const app = express();
-
+/*
 app.use(session({
-    secret: 'eiveretgine',
+    secret: secretKey.secret,
     resave: true,
     saveUninitialized: false
 }));
+ */
+app.use(cookieParser());
 app.use(express.urlencoded({extended: false}));
 app.use(cors());
 app.use(express.json());
@@ -65,7 +71,7 @@ app.post('/api/login', async (request, response) => {
             throw new Error('Please provide valid password.');
         }
         const {username, email, password} = request.body;
-        let getHashQuery = "SELECT `password`, `id` FROM `users` WHERE";
+        let getHashQuery = "SELECT `password`, `id`, `username` FROM `users` WHERE";
         let value = "";
         if(username){
             getHashQuery = getHashQuery + " `username` = ?";
@@ -87,9 +93,12 @@ app.post('/api/login', async (request, response) => {
                 throw new Error('Sorry an error has occurred.');
             }
             if(res){
-                request.session.loggedin = true;
-                request.session.userid = result[0].id;
-                response.send({success: true});
+                //request.session.loggedin = true;
+                //request.session.userid = result[0].id;
+                const payload = {username: result[0].username};
+                const token = jwt.sign(payload, secretKey.secret, {expiresIn: '1h'});
+
+                response.cookie('token', token, {httpOnly: true}).send({success: true});
             } else {
                 throw new Error('Incorrect password.');
             }
@@ -99,7 +108,8 @@ app.post('/api/login', async (request, response) => {
     }
 });
 
-app.post('/api/newsfeed', (request, response) => {
+app.get('/api/newsfeed', auth, (request, response) => {
+    console.log('request:', request);
     response.send({
         success: true
     });

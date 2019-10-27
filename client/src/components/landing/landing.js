@@ -3,8 +3,13 @@ import '../../assets/css/landing.scss';
 import DetailBox from "../detailBox";
 import userImg from '../../../../dummyData/images/firsticon.jpg';
 import detailImg from '../../../../dummyData/images/newsfeed1.jpg';
+import axios from "axios";
 
 class Landing extends Component {
+    async componentDidMount() {
+        await axios.get('/api/newsfeed');
+    }
+
     render(){
         let comments = [
             {
