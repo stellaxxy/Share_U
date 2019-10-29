@@ -5,7 +5,7 @@ import {setLoginInfo} from "../../actions";
 import axios from 'axios';
 
 class Login extends Component {
-    async handleSubmit(values){
+     handleSubmit = async (values)=>{
         let loginValues = {password: values.password};
 
         if(values.loginInfo.includes("@")){
@@ -15,15 +15,14 @@ class Login extends Component {
         }
 
         const result = await axios.post('/api/login', loginValues);
-        console.log('result', result);
-        if(result.success){
-            //let loginPayload = {auth: true, info: {}};
-            //this.props.setLoginInfo()
 
+        if(result.data.success){
+            this.props.history.push('/');
         }
     }
 
     render() {
+
         return (
             <LoginForm onSubmit={this.handleSubmit}/>
         )

@@ -4,10 +4,17 @@ import DetailBox from "../detailBox";
 import userImg from '../../../../dummyData/images/firsticon.jpg';
 import detailImg from '../../../../dummyData/images/newsfeed1.jpg';
 import axios from "axios";
+import Nav from "../nav";
 
 class Landing extends Component {
     async componentDidMount() {
-        await axios.get('/api/newsfeed');
+        const result = await axios.get('/api/newsfeed');
+
+        if(!result.data.success){
+            if(result.data.error[0] === "Unauthorized user" || result.data.error[0] === "Unauthorized user: Invalid token"){
+                this.props.history.push('/login');
+            }
+        }
     }
 
     render(){
@@ -60,6 +67,9 @@ class Landing extends Component {
                 </div>
                 <div className="landingBody newsfeedDiv">
                     <DetailBox username="xxy" ownerIcon={userImg} images={[detailImg]} time="15 hours ago" comments={comments} likes={likes} description="pretty night stars"/>
+                </div>
+                <div className="landingBottom">
+                    <Nav/>
                 </div>
             </div>
         )

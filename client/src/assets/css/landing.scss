@@ -8,6 +8,9 @@
   .landingHeading {
     height: 50px;
     border-bottom: 0.7px solid darkgrey;
+    position: fixed;
+    top: 0;
+    width: 100%;
 
     .landingTitle {
       transform: translateY(-50%);
@@ -20,6 +23,8 @@
 
   .newsfeedDiv {
     width: 100%;
+    position: relative;
+    top: 50px;
 
     .detailDiv {
       width: 100%;
@@ -129,6 +134,38 @@
 
         .time {
           font-size: 75%;
+        }
+      }
+    }
+  }
+
+  .landingBottom {
+    height: 55px;
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    margin-top: 5px;
+    border-top: 0.7px solid darkgrey;
+
+    nav {
+      height: 100%;
+
+      ul {
+        height: 100%;
+        list-style-type: none;
+        padding-left: 0;
+        margin: 0;
+        display: flex;
+        justify-content: space-around;
+
+        li {
+          height: 100%;
+          display: inline-block;
+          padding: 5px;
+
+            .importIcon {
+              height: 60%;
+          }
         }
       }
     }

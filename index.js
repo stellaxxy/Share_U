@@ -25,7 +25,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(__dirname + '/client/dist'));
 
-app.post('/api/signup', (request, response) => {
+app.post('/api/signup', async (request, response) => {
     try {
         if(!request.body.username || !request.body.email || !request.body.password){
             if(!request.body.username){
@@ -35,10 +35,23 @@ app.post('/api/signup', (request, response) => {
                 throw new Error('Please provide valid email.');
             }
             if(!request.body.password){
-                throw new Error('Please provide valid password');
+                throw new Error('Please provide valid password.');
             }
         } else {
             let {username, email, password} = request.body;
+
+            const checkQuery = "SELECT * FROM `users` WHERE `username` = ? OR `email` = ?";
+            const checkInsertInfo = [username, email];
+            const checkFormattedQuery = mysql.format(checkQuery, checkInsertInfo);
+            const checkResult = await db.query(checkFormattedQuery);
+            if(checkResult.length !== 0){
+                if(checkResult[0].username === username){
+                    throw new Error('Username is taken.');
+                } else if(checkResult[0].email === email) {
+                    throw new Error('Email is taken');
+                }
+            }
+
             const saltRounds = 10;
             bcrypt.hash(password, saltRounds, async (err, hash) => {
                if(err){
@@ -108,8 +121,12 @@ app.post('/api/login', async (request, response) => {
     }
 });
 
+app.post('/api/followfriend', auth, (request, response) => {
+
+});
+
 app.get('/api/newsfeed', auth, (request, response) => {
-    console.log('request:', request);
+    //console.log('request:', request);
     response.send({
         success: true
     });
