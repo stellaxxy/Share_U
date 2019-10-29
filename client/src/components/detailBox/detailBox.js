@@ -7,16 +7,32 @@ import bookmarkIcon from '../../assets/images/bookmark.png';
 
 class DetailBox extends Component {
     render(){
+        let numOfLikesStr = '';
+        let viewCommtStr = '';
+
+        if(this.props.likes.length === 1){
+            numOfLikesStr = `1 Like`;
+        } else {
+            numOfLikesStr = `${this.props.likes.length} Likes`;
+        }
+        if(this.props.comments.length === 1){
+            viewCommtStr = `View 1 comment`;
+        } else {
+            viewCommtStr = `View all ${this.props.comments.length} comments`;
+        }
+
         return (
             <div className="detailDiv">
                 <div className="detailTop">
                     <div className="detailOwnerIcon">
-                        <img src={userImg} alt="user image"/>
+                        <img src={this.props.ownerIcon} alt="user image"/>
                     </div>
-                    <div className="detailUsername">xxy</div>
+                    <div className="detailUsername username">{this.props.username}</div>
                 </div>
                 <div className="detailMiddle">
-                    <img src={detailImg} alt="detail picture"/>
+                    <div className="detailPicDiv">
+                        <img src={this.props.images[0]} alt="detail picture"/>
+                    </div>
                     <div className="detailBtmDiv">
                         <div className="likeBtn">
                             <img src={likeIcon} alt="like icon"/>
@@ -30,14 +46,14 @@ class DetailBox extends Component {
                     </div>
                 </div>
                 <div className="detailBottom">
-                    <div className="totalLikes">300 Likes</div>
+                    <div className="totalLikes">{numOfLikesStr}</div>
                     <div className="detailDescription">
-                        <div>xxy</div>
-                        <div>detail description</div>
+                        <div className="username">{this.props.username}</div>
+                        <div className="description">{this.props.description}</div>
                     </div>
-                    <div className="viewCommtBtn">View all 50 comments</div>
-                    <div>
-                        <div className="time">15 hours ago</div>
+                    <div className="viewCommtBtn">{viewCommtStr}</div>
+                    <div className="time">
+                        <div>{this.props.time}</div>
                     </div>
                 </div>
             </div>

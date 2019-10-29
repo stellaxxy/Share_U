@@ -1,0 +1,173 @@
+.username {
+  font-weight: 800;
+}
+
+.landingDiv {
+  width: 100%;
+
+  .landingHeading {
+    height: 50px;
+    border-bottom: 0.7px solid darkgrey;
+    position: fixed;
+    top: 0;
+    width: 100%;
+
+    .landingTitle {
+      transform: translateY(-50%);
+      position: relative;
+      top: 50%;
+      text-align: center;
+      font-family: 'Mansalva', cursive;
+    }
+  }
+
+  .newsfeedDiv {
+    width: 100%;
+    position: relative;
+    top: 50px;
+
+    .detailDiv {
+      width: 100%;
+      font-size: 68%;
+      padding-bottom: 5px;
+
+        .detailTop {
+          height: 45px;
+          text-align: initial;
+          padding: 0 12px;
+
+          .detailOwnerIcon {
+            height: 74%;
+            width: 34px;
+            display: inline-block;
+            margin-right: 12px;
+            position: relative;
+            top: 13%;
+
+            img {
+              height: 100%;
+              width: 100%;
+              border-radius: 10px;
+            }
+          }
+
+          .detailUsername {
+            display: inline-block;
+            position: relative;
+            vertical-align: middle;
+            height: 74%;
+          }
+        }
+
+      .detailMiddle {
+        width: 100%;
+        font-size: 0;
+
+        .detailPicDiv {
+          width: 100%;
+
+          img {
+            width: 100%;
+          }
+        }
+
+        .detailBtmDiv {
+          height: 40px;
+          font-size: 30px;
+          margin-top: 5px;
+          margin-bottom: 5px;
+          position: relative;
+          padding: 0 12px;
+
+          .likeBtn, .dialogBtn, .bookmarkBtn {
+            height: 54%;
+            display: inline-block;
+            width: 22px;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+
+            img {
+              width: 100%;
+              position: absolute;
+            }
+          }
+
+          .dialogBtn {
+            left: 13%;
+          }
+
+          .bookmarkBtn {
+            width: 18px;
+            right: 12px;
+          }
+        }
+      }
+
+      .detailBottom {
+        padding: 0 12px;
+
+        .totalLikes {
+          font-size: 80%;
+        }
+
+        .detailDescription {
+          .username {
+            display: inline-block;
+            margin-right: 5px;
+            font-weight: 800;
+          }
+
+          .description {
+            display: inline-block;
+          }
+        }
+
+        .viewCommtBtn, .time {
+          color: grey;
+          font-size: 80%;
+        }
+
+        .viewCommtBtn {
+          margin: 8px 0;
+        }
+
+        .time {
+          font-size: 75%;
+        }
+      }
+    }
+  }
+
+  .landingBottom {
+    height: 55px;
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    margin-top: 5px;
+    border-top: 0.7px solid darkgrey;
+
+    nav {
+      height: 100%;
+
+      ul {
+        height: 100%;
+        list-style-type: none;
+        padding-left: 0;
+        margin: 0;
+        display: flex;
+        justify-content: space-around;
+
+        li {
+          height: 100%;
+          display: inline-block;
+          padding: 5px;
+
+            .importIcon {
+              height: 60%;
+          }
+        }
+      }
+    }
+  }
+}
