@@ -102,18 +102,22 @@ app.post('/api/login', async (request, response) => {
         let hash = result[0].password;
 
         bcrypt.compare(password, hash, (err, res) => {
-            if(err){
-                throw new Error('Sorry an error has occurred.');
-            }
-            if(res){
-                //request.session.loggedin = true;
-                //request.session.userid = result[0].id;
-                const payload = {username: result[0].username};
-                const token = jwt.sign(payload, secretKey.secret, {expiresIn: '1h'});
+            try {
+                if(err){
+                    throw new Error('Sorry an error has occurred.');
+                }
+                if(res){
+                    //request.session.loggedin = true;
+                    //request.session.userid = result[0].id;
+                    const payload = {userid: result[0].id};
+                    const token = jwt.sign(payload, secretKey.secret, {expiresIn: '1h'});
 
-                response.cookie('token', token, {httpOnly: true}).send({success: true});
-            } else {
-                throw new Error('Incorrect password.');
+                    response.cookie('token', token, {httpOnly: true}).send({success: true});
+                } else {
+                    throw new Error('Incorrect password.');
+                }
+            } catch(err) {
+                handleError(response, err.message);
             }
         })
     } catch(err) {
@@ -121,12 +125,88 @@ app.post('/api/login', async (request, response) => {
     }
 });
 
-app.post('/api/followfriend', auth, (request, response) => {
+app.post('/api/friendship', auth, async (request, response) => {
+    //make sure first user id is smaller than second user id
+    //type: follow/ unfollow/ block/ unblock
+    try{
+        if(!request.userid || !request.body.secondUserId || !request.body.type){
+            throw new Error('Missing information');
+        }
+        const {secondUserId, type} = request.body;
+        const {userid} = request;
+        let checkInfo = [];
 
+        const checkQuery = "SELECT * FROM `userfriendship` WHERE `user_first_id` = ? AND `user_second_id` = ?";
+        if(userid < secondUserId){
+            checkInfo = [userid, secondUserId];
+        } else {
+            checkInfo = [secondUserId, userid];
+        }
+
+        const checkResult = await db.query(checkQuery, checkInfo);
+
+        let updateType = '';
+        let query = '';
+        if(checkResult.length !== 0){
+            let condition = '';
+
+            if(type === 'follow'){
+                condition = userid < secondUserId ? 'second_follow_first' : 'first_follow_second';
+                if(checkResult[0].type === condition){
+                    updateType = 'mutual_follow';
+                }
+            } else if(type === 'unfollow'){
+                condition = userid < secondUserId ? 'first_follow_second' : 'second_follow_first';
+                if(checkResult[0].type === condition){
+                    updateType = 'delete';
+                } else if(checkResult[0].type === 'mutual_follow'){
+                    updateType = userid < secondUserId ? 'second_follow_first' : 'first_follow_second';
+                }
+            } else if(type === 'block'){
+                condition = userid < secondUserId ? 'second_block_first' : 'first_block_second';
+                if(checkResult[0].type === condition){
+                    updateType = 'mutual_block';
+                } else {
+                    updateType = userid < secondUserId ? 'first_block_second' : 'second_block_first';
+                }
+            } else if(type === 'unblock'){
+                condition = userid < secondUserId ? 'first_block_second' : 'second_block_first';
+                if(checkResult[0].type === condition){
+                    updateType = 'delete';
+                } else if(checkResult[0].type === 'mutual_block'){
+                    updateType = userid < secondUserId ? 'second_block_first': 'first_block_second';
+                }
+            }
+
+            if(updateType === 'delete'){
+                query = "DELETE FROM `userfriendship` WHERE `user_first_id` = ? AND `user_second_id` = ?";
+            } else {
+                query = "UPDATE `userfriendship` SET `type` = ? WHERE `user_first_id` = ? AND `user_second_id` = ?";
+                checkInfo.unshift(updateType);
+            }
+        } else {
+            query = "INSERT INTO `userfriendship` (`user_first_id`, `user_second_id`, `type`) VALUES (?, ?, ?)";
+            if(type === 'follow'){
+                updateType = userid < secondUserId ? 'first_follow_second' : 'second_follow_first';
+            } else if(type === 'block'){
+                updateType = userid < secondUserId ? 'first_block_second' : 'second_block_first';
+            }
+            checkInfo.push(updateType);
+        }
+        const result = await db.query(query, checkInfo);
+
+        if(result.affectedRows === 1){
+            response.send({success: true});
+        } else {
+            throw new Error('Sorry an error has occurred');
+        }
+    } catch(err) {
+        handleError(response, err.message);
+    }
 });
 
 app.get('/api/newsfeed', auth, (request, response) => {
-    //console.log('request:', request);
+    console.log('request:', request);
     response.send({
         success: true
     });

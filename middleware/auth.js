@@ -13,7 +13,7 @@ module.exports = (request, response, next)=>{
               //throw new Error('Unauthorized user: Invalid token');
               response.send({success: false, error: ['Unauthorized user: Invalid token']});
           } else {
-              request.username = decoded.username;
+              request.userid = decoded.userid;
               next();
           }
       })
