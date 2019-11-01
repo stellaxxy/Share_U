@@ -205,6 +205,54 @@ app.post('/api/friendship', auth, async (request, response) => {
     }
 });
 
+app.post('/api/addnewsfeed', auth, async (request, response) => {
+    try {
+        if(!request.userid){
+            throw new Error('Missing user id');
+        } else if(!request.body.imgLocation){
+            throw new Error('Missing image');
+        }
+
+        const ownerId = request.userid;
+        const {description, location, imgLocation} = request.body;
+        console.log('img location:', typeof imgLocation);
+        const newsfeedQuery = "INSERT INTO `newsfeed` (`ownerId`, `description`, `time`, `location`) VALUES (?, ?, NOW(), ?)";
+        const newsfeedInfo = [ownerId, description, location];
+        const newsfeedResult = await db.query(newsfeedQuery, newsfeedInfo);
+
+        console.log('newsfeed result:', newsfeedResult);
+
+        if(newsfeedResult.affectedRows === 1 && newsfeedResult.insertId){
+            const imgQuery = "INSERT INTO `images`(`newsfeedId`, `imgLocation`) VALUES ?";
+            const arrOfImgs = imgLocation.map(item => {
+                return [newsfeedResult.insertId, item];
+            });
+            console.log('arr of imgs:', arrOfImgs);
+            //const imgInfo = [newsfeedResult.insertId, imgLocation];
+            const imgResult = await db.query(imgQuery, [arrOfImgs]);
+
+            console.log('img result:', imgResult);
+            if(imgResult.affectedRows > 0){
+                response.send({success: true});
+            } else {
+                const delQuery = "DELETE FROM `newsfeed` WHERE `id` = ?";
+                const delInfo = [newsfeedResult.insertId];
+                const delResult = await db.query(delQuery, delInfo);
+                console.log('delete result', delResult);
+                if(delResult.affectedRows === 1){
+                    throw new Error('Failed to add new newsfeed.');
+                } else {
+                    throw new Error('Failed to add new newsfeed images and to delete newsfeed item from newsfeed table.');
+                }
+            }
+        } else {
+            throw new Error('Failed to add new newsfeed.');
+        }
+    } catch(err) {
+        handleError(response, err.message);
+    }
+});
+
 app.get('/api/newsfeed', auth, (request, response) => {
     console.log('request:', request);
     response.send({
